@@ -1,5 +1,5 @@
 import React from 'react'
-import { fetch<%= capitalizeName %> } from '../actions/<%= lowercaseName =>Actions'
+import { fetch<%= capitalizeName %> } from '../actions/<%= lowercaseName %>Actions'
 // your loader
 export default class Abstract<%= capitalizeName %>Component extends React.Component {
 
@@ -21,7 +21,7 @@ export default class Abstract<%= capitalizeName %>Component extends React.Compon
   }
 
   getModel () {
-    return this.props.<%= lowercaseName =>[this.getKey()]
+    return this.props.<%= lowercaseName %>[this.getKey()]
   }
 
   isLoaded (){
@@ -39,7 +39,7 @@ export default class Abstract<%= capitalizeName %>Component extends React.Compon
 // REQUIRED FOR EACH COMPONENT
 // export default connect((store) => {
 //   return {
-//     <%= lowercaseName =>: store.<%= lowercaseName =>.collection,
-//     _id: store.<%= lowercaseName =>._id
+//     <%= lowercaseName %>: store.<%= lowercaseName %>.collection,
+//     _id: store.<%= lowercaseName %>._id
 //   }
 // })(Abstract<%= capitalizeName %>Component)
