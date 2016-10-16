@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/Sunny-fr/caster-redux-collection-component/issues"
   },
-  "homepage": "https://github.com/Sunny-fr/caster-redux-collection-component#readme"
+  "homepage": "https://github.com/Sunny-fr/caster-redux-collection-component#readme",
+  "dependencies": {
+    "caster": "github:sunny-fr/caster"
+  }
 }
