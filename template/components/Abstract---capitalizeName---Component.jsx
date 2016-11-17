@@ -1,45 +1,87 @@
 import React from 'react'
-import { fetch<%= capitalizeName %> } from '../actions/<%= lowercaseName %>Actions'
-// your loader
-export default class Abstract<%= capitalizeName %>Component extends React.Component {
+import { fetchAll, fetchOne, flatten, reset, remove } from '../actions/<%= lowercaseName %>Actions'
 
-  fetch = (params) => {
-    this.props.dispatch(fetch<%= capitalizeName %>(params))
-  }
 
+export class AbstractComponent extends React.Component {
   render () {
     if (!this.isLoaded()) return  (<p>loading</p>)
+    return (<div>loaded (you should do something with your view :) )</div>)
+  }
+}
+
+export class AbstractCollectionComponent extends AbstractComponent {
+
+  remove = (data) => {
+    this.props.dispatch(remove(data))
   }
 
-  getArgs () {
-    const { code, type } = this.props.params ? this.props.params : this.props
-    return { code, type }
+  fetch = () => {
+    this.props.dispatch(fetchAll())
   }
 
-  getKey () {
-    return this.props._id(this.getArgs())
-  }
-
-  getModel () {
-    return this.props.<%= lowercaseName %>[this.getKey()]
+  getCollection() {
+    return flatten(this.props.collection)
   }
 
   isLoaded (){
-    const item = this.getModel()
-    return !(!item || !item.metas.loaded)
+    return this.props.collectionLoaded
   }
 
   componentWillMount (){
-    if (!this.isLoaded()) this.fetch(this.getArgs())
+    if (!this.isLoaded()) this.fetch()
+  }
+  componentWillUnmount() {
+    this.props.dispatch(reset())
+  }
+}
+
+export class AbstractModelComponent extends AbstractComponent {
+
+  fetch = (params) => {
+    this.props.dispatch(fetchOne(params))
   }
 
+  _getModel (newProps) {
+    const props = newProps || this.props
+    return this.isNew(props) ? props.tempModel : props.collection[this.getKey(props)]
+  }
+
+  isNew (props) {
+    return !this.getKey(props)
+  }
+
+  getKey (props) {
+    return props ? props.id : this.props.id
+  }
+
+  getModel () {
+    return this._getModel().model
+  }
+
+  getMetas (prop, newProps) {
+    if (!this._getModel(newProps)) return null;
+    return prop ? this._getModel(newProps).metas[prop] :  this._getModel(newProps).metas
+  }
+
+  isLoaded (props){
+    return !(!this._getModel(props) || !this.getMetas('loaded', props))
+  }
+
+  componentWillReceiveProps(props){
+    if (!this.isNew(props) && !this.isLoaded(props)) this.fetch({id:this.getKey(props)})
+  }
+
+  componentWillMount (){
+    if (!this.isNew() && !this.isLoaded()) this.fetch({id:this.getKey()})
+  }
 }
 
 
-// REQUIRED FOR EACH COMPONENT
+//REQUIRED FOR EACH COMPONENT
 // export default connect((store) => {
 //   return {
-//     <%= lowercaseName %>: store.<%= lowercaseName %>.collection,
-//     _id: store.<%= lowercaseName %>._id
+//     tempModel: store.<%= lowercaseName %>.temp,
+//     collectionLoaded: store.<%= lowercaseName %>.loaded,
+//     collection: store.<%= lowercaseName %>.collection
 //   }
-// })(Abstract<%= capitalizeName %>Component)
+// })(YOUR_COMPONENT)

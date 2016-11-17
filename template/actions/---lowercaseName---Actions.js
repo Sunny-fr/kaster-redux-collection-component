@@ -1,17 +1,34 @@
 import axios from 'axios'
 import config from 'config'
 
-const url_item = config.paths.streams.stream
-const url_list = config.paths.streams.list
+const url_item = config.paths.<%= lowercaseName %>.item
+const url_list = config.paths.<%= lowercaseName %>.list
 
-/**
+
+export function flatten (node) {
+  return Object.keys(node).map(nodeName => node[nodeName].model)
+}
+
+/** EDITING **/
+/*
+
+ */
+
+export function edit (data) {
+  return function (dispatch) {
+    dispatch({type:'EDIT_<%= uppercaseName %>', payload: {data}})
+  }
+}
+
+/** SINGLE ITEM **/
+/*
   FETCH ONE
   @params: Object, set of params to enhance urls
-**/
-export function fetch<%= capitalizeName %> (params) {
+*/
+export function fetchOne (params) {
   return function (dispatch) {
     dispatch({type: "FETCH_<%= uppercaseName %>", payload: {params}})
-    const url = url_item
+    const url = url_item.replace('{id}', params.id)
     axios.get(url).then(response=>{
       dispatch({type: "FETCH_<%= uppercaseName %>_FULFILLED", payload: {data: response.data, params}})
     }).catch((error) => {
@@ -20,19 +37,64 @@ export function fetch<%= capitalizeName %> (params) {
   }
 }
 
-/**
-  FETCH LIST
-**/
-export function fetch<%= capitalizeName %>s (type) {
+/*
+ SAVE
+ */
+export function save (data) {
   return function (dispatch) {
-    const url = url_list.replace('{type}', type)
-    dispatch({type: 'FETCH_<%= uppercaseName %>S', payload: {type}})
+    dispatch({type:'SAVE_<%= uppercaseName %>', payload: {data}})
+    const method = data.id ? 'put' : 'post'
+    const url = url_item.replace('{id}', data.id || '')
+    axios[method](url, data).then(response=>{
+      dispatch({type: "SAVE_<%= uppercaseName %>_FULFILLED", payload: {params:data, data: response.data}})
+    }).catch((error) => {
+      dispatch({type: "SAVE_<%= uppercaseName %>_REJECTED", payload: {error, data}})
+    })
+  }
+}
+
+/*
+ REMOVE
+ */
+export function remove (data) {
+  return function (dispatch) {
+    dispatch({type:'DELETE_<%= uppercaseName %>', payload: {data}})
+    const url = url_item.replace('{id}', data.id || '')
+    axios.delete(url).then(response=>{
+      dispatch({type: "DELETE_<%= uppercaseName %>_FULFILLED", payload: {params:data, data: response.data}})
+    }).catch((error) => {
+      dispatch({type: "DELETE_<%= uppercaseName %>_REJECTED", payload: {error, data}})
+    })
+  }
+}
+
+
+/** LISTS **/
+/*
+  FETCH LIST
+*/
+export function fetchAll () {
+  return function (dispatch) {
+    const url = url_list
+    dispatch({type: 'FETCH_<%= uppercaseName %>S', payload: {}})
     axios.get(url)
-      .then((response) => {
-        dispatch({type: 'FETCH_<%= uppercaseName %>S_FULFILLED', payload: {data: response.data, type}})
-      })
-      .catch((error) => {
-        dispatch({type: 'FETCH_<%= uppercaseName %>S_REJECTED', payload: {error, type}})
-      })
+        .then((response) => {
+          dispatch({type: 'FETCH_<%= uppercaseName %>S_FULFILLED', payload: {data: response.data}})
+        })
+        .catch((error) => {
+          dispatch({type: 'FETCH_<%= uppercaseName %>S_REJECTED', payload: {error}})
+        })
+  }
+}
+
+export function reset () {
+  return function (dispatch) {
+    dispatch({type: 'RESET_<%= uppercaseName %>S'})
+  }
+}
+
+export function resetTemp () {
+  return function (dispatch) {
+    dispatch({type: 'RESET_TEMP'})
   }
 }
