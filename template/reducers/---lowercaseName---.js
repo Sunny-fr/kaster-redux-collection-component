@@ -1,5 +1,4 @@
 /* GENERATED WITH CASTER */
-// ID GENERATOR
 /* <%= uppercaseName %> REDUCER STRUCTURE */
 
 const default<%= capitalizeName %> = {
@@ -18,11 +17,11 @@ const defaultState = {
 function mapModels(list) {
   return list.reduce((prev, current) => {
     prev[current.id] = Object.assign({}, default<%= capitalizeName %>, {
-      model: current,
-      metas: {...default<%= capitalizeName %>.metas, loaded: true, valid: true}
-    })
-    return prev
-  }, {})
+    model: current,
+    metas: {...default<%= capitalizeName %>.metas, loaded: true, valid: true}
+})
+  return prev
+}, {})
 }
 
 
@@ -65,11 +64,11 @@ export default function reducer(state = defaultState, action) {
         newState.collection[key] = {...default<%= capitalizeName %>, metas: {...default<%= capitalizeName %>.metas, fetching: true}}
       } else {
         newState.collection[key] = Object.assign({}, newState.collection[key], {
-          metas: {
-            ...default<%= capitalizeName %>.metas,
+              metas: {
+                  ...default<%= capitalizeName %>.metas,
             fetching: true
-          }
-        })
+      }
+      })
       }
       return newState
     }
@@ -77,18 +76,17 @@ export default function reducer(state = defaultState, action) {
     case "FETCH_<%= uppercaseName %>_REJECTED": {
       const collection = {...state.collection}
       const key = action.payload.params.id
-      const _model = {...collection[key]}
       collection[key] = {
-        ..._model.metas,
-        loaded: false,
-        fetching: false,
-        valid: false,
-        error: action.payload.error
-      }
+          ...collection[key].metas,
+          loaded: false,
+          fetching: false,
+          valid: false,
+          error: action.payload.error
+    }
       return {
-        ...state,
-        collection
-      }
+          ...state,
+          collection
+    }
     }
 
     case "FETCH_<%= uppercaseName %>_FULFILLED": {
@@ -96,9 +94,9 @@ export default function reducer(state = defaultState, action) {
       const key = action.payload.params.id
       collection[key] = {metas: {loaded: true, fetching: false, valid: true}, model: action.payload.data}
       return {
-        ...state,
-        collection
-      }
+          ...state,
+          collection
+    }
     }
 
     case "RESET_TEMP" : {
@@ -112,14 +110,14 @@ export default function reducer(state = defaultState, action) {
         return {
             ...state,
             temp: {...state.temp, model: action.payload.data}
-        }
+      }
       } else {
         const collection = {...state.collection}
         collection[key].model = action.payload.data
         return {
-          ...state,
-          collection
-        }
+            ...state,
+            collection
+      }
       }
     }
 
@@ -146,9 +144,9 @@ export default function reducer(state = defaultState, action) {
       }else {
         const collection = update(updated, key)
         return {
-          ...state,
-          collection
-        }
+            ...state,
+            collection
+      }
       }
     }
 
@@ -162,9 +160,9 @@ export default function reducer(state = defaultState, action) {
       } else {
         const collection = update(updated, key)
         return {
-          ...state,
-          collection
-        }
+            ...state,
+            collection
+      }
       }
     }
 
@@ -182,9 +180,9 @@ export default function reducer(state = defaultState, action) {
       const updated = { ...prev, metas: { ...prev.metas, error: action.payload.error, deleting: false } }
       const collection = update(updated, key)
       return {
-        ...state,
-        collection
-      }
+          ...state,
+          collection
+    }
     }
 
     case "DELETE_<%= uppercaseName %>_FULFILLED": {
@@ -192,9 +190,9 @@ export default function reducer(state = defaultState, action) {
       const collection = {...state.collection}
       delete collection[key]
       return {
-        ...state,
-        collection
-      }
+          ...state,
+          collection
+    }
     }
 
 
@@ -204,4 +202,3 @@ export default function reducer(state = defaultState, action) {
   }
 
 }
-
