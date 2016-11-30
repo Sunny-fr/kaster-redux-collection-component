@@ -1,6 +1,6 @@
 {
   "name": "caster-redux-collection-component",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A caster generator for react redux component for a collection of items",
   "main": "index.js",
   "scripts": {
