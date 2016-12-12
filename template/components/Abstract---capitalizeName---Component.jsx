@@ -68,7 +68,7 @@ export class AbstractModelComponent extends AbstractComponent {
   }
 
   componentWillReceiveProps(props){
-    if (!this.isNew(props) && !this.isLoaded(props)) this.fetch({id:this.getKey(props)})
+    if (!this.isNew(props) && !this.isLoaded(props) && !this.getMetas('error', props)) this.fetch({id:this.getKey(props)})
   }
 
   componentWillMount (){
