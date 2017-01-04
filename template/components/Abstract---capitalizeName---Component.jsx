@@ -63,16 +63,20 @@ export class AbstractModelComponent extends AbstractComponent {
     return prop ? this._getModel(newProps).metas[prop] :  this._getModel(newProps).metas
   }
 
-  isLoaded (props){
-    return !(!this._getModel(props) || !this.getMetas('loaded', props))
+  gotError(props) {
+      return !!this.getMetas('error', props || this.props)
   }
 
-  componentWillReceiveProps(props){
-    if (!this.isNew(props) && !this.isLoaded(props) && !this.getMetas('error', props)) this.fetch({id:this.getKey(props)})
+  isLoaded(props) {
+      return !(!this._getModel(props) || !this.getMetas('loaded', props))
   }
 
-  componentWillMount (){
-    if (!this.isNew() && !this.isLoaded()) this.fetch({id:this.getKey()})
+  componentWillReceiveProps(props) {
+      if (!this.isNew(props) && !this.isLoaded(props) && !this.gotError(props)) this.fetch({name: this.getKey(props)})
+  }
+
+  componentWillMount() {
+      if (!this.isNew() && !this.isLoaded() && !this.gotError()) this.fetch({name: this.getKey()})
   }
 }
 
