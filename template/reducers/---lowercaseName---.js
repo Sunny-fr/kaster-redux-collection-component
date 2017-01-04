@@ -76,14 +76,8 @@ export default function reducer(state = defaultState, action) {
     case "FETCH_<%= uppercaseName %>_REJECTED": {
       const collection = {...state.collection}
       const key = action.payload.params.id
-      collection[key] = {
-          ...collection[key].metas,
-          loaded: false,
-          fetching: false,
-          valid: false,
-          error: action.payload.error
-    }
-      return {
+        collection[key] = {metas: {loaded: false, fetching: false, valid: false, error: action.payload.error}, model:{...default<%= capitalizeName %>.model}}
+        return {
           ...state,
           collection
     }
