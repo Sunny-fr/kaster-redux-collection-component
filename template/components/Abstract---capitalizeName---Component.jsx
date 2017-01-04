@@ -4,6 +4,7 @@ import { fetchAll, fetchOne, flatten, reset, remove } from '../actions/<%= lower
 
 export class AbstractComponent extends React.Component {
   render () {
+    if (this.gotError()) return null
     if (!this.isLoaded()) return  (<p>loading</p>)
     return (<div>loaded (you should do something with your view :) )</div>)
   }
