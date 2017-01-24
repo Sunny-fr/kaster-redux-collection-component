@@ -38,47 +38,58 @@ export class AbstractCollectionComponent extends AbstractComponent {
 
 export class AbstractModelComponent extends AbstractComponent {
 
-  fetch = (params) => {
-    this.props.dispatch(fetchOne(params))
-  }
+    fetch = (params) => {
+        console.log('fetch', params.name)
+        this.props.dispatch(fetchOne(params))
+    }
 
-  _getModel (newProps) {
-    const props = newProps || this.props
-    return this.isNew(props) ? props.tempModel : props.collection[this.getKey(props)]
-  }
+    _getModel(newProps) {
+        const props = newProps || this.props
+        return this.isNew(props) ? props.tempModel : props.collection[this.getKey(props)]
+    }
 
-  isNew (props) {
-    return !this.getKey(props)
-  }
+    isNew(props) {
+        return !this.getKey(props)
+    }
 
-  getKey (props) {
-    return props ? props.id : this.props.id
-  }
+    getKey(props) {
+        return props ? props.name : this.props.name
+    }
 
-  getModel () {
-    return this._getModel().model
-  }
+    getModel() {
+        return this._getModel().model
+    }
 
-  getMetas (prop, newProps) {
-    if (!this._getModel(newProps)) return null;
-    return prop ? this._getModel(newProps).metas[prop] :  this._getModel(newProps).metas
-  }
+    getMetas(prop, newProps) {
+        if (!this._getModel(newProps)) return null;
+        return prop ? this._getModel(newProps).metas[prop] : this._getModel(newProps).metas
+    }
 
-  gotError(props) {
-      return !!this.getMetas('error', props || this.props)
-  }
+    gotError(props) {
+        return !!this.getMetas('error', props || this.props)
+    }
 
-  isLoaded(props) {
-      return !(!this._getModel(props) || !this.getMetas('loaded', props))
-  }
+    isFetching(props){
+        return this.getMetas('fetching', props)
+    }
 
-  componentWillReceiveProps(props) {
-      if (!this.isNew(props) && !this.isLoaded(props) && !this.gotError(props)) this.fetch({name: this.getKey(props)})
-  }
+    isLoaded(props) {
+        return !(!this._getModel(props) || !this.getMetas('loaded', props))
+    }
 
-  componentWillMount() {
-      if (!this.isNew() && !this.isLoaded() && !this.gotError()) this.fetch({name: this.getKey()})
-  }
+    canUpdate(_props){
+        const props = _props || this.props
+        //console.log(this.getKey(props),'is new',this.isNew(props), 'is loaded',this.isLoaded(props), 'is fetching', this.isFetching(props), 'issued',  this.gotError(props))
+        return !this.isNew(props) && !this.isLoaded(props) && !this.isFetching(props) && !this.gotError(props)
+    }
+
+    componentWillReceiveProps(props) {
+        if (this.canUpdate(props)) this.fetch({name: this.getKey(props)})
+    }
+
+    componentWillMount() {
+        if (this.canUpdate()) this.fetch({name: this.getKey()})
+    }
 }
 
 
