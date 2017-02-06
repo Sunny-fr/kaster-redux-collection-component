@@ -52,8 +52,14 @@ export class AbstractModelComponent extends AbstractComponent {
         return !this.getKey(props)
     }
 
-    getKey(props) {
-        return props ? props.name : this.props.name
+    /** CHANGE VALUES HERE **/
+    getParams(props){
+        const { prop1, prop2, prop3} = props || this.props
+        return { prop1, prop2, prop3}
+    }
+
+    getKey(props){
+        return interpolate(null, this.getParams(props || this.props))
     }
 
     getModel() {
@@ -84,11 +90,11 @@ export class AbstractModelComponent extends AbstractComponent {
     }
 
     componentWillReceiveProps(props) {
-        if (this.canUpdate(props)) this.fetch({name: this.getKey(props)})
+        if (this.canUpdate(props)) this.fetch(this.getParams(props))
     }
 
     componentWillMount() {
-        if (this.canUpdate()) this.fetch({name: this.getKey()})
+        if (this.canUpdate()) this.fetch(this.getParams())
     }
 }
 
