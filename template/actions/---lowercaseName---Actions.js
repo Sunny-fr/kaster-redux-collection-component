@@ -4,10 +4,17 @@ import config from 'config'
 const url_item = config.paths.<%= lowercaseName %>.item
 const url_list = config.paths.<%= lowercaseName %>.list
 
-
 export function flatten (node) {
   return Object.keys(node).map(nodeName => node[nodeName].model)
 }
+
+function interpolate(str, params) {
+    const keys = Object.keys(params);
+    return keys.reduce((prev, current) => {
+        return prev.replace(new RegExp('{' + current + '}'), params[current])
+    }, str || keys.map(v => '{' + v + '}').join(':'))
+}
+
 
 /** EDITING **/
 /*
@@ -28,7 +35,7 @@ export function edit (data) {
 export function fetchOne (params) {
   return function (dispatch) {
     dispatch({type: "FETCH_<%= uppercaseName %>", payload: {params}})
-    const url = url_item.replace('{id}', params.id)
+    const url = interpolate(url_item, params)
     axios.get(url).then(response=>{
       dispatch({type: "FETCH_<%= uppercaseName %>_FULFILLED", payload: {data: response.data, params}})
     }).catch((error) => {
