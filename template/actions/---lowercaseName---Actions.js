@@ -17,9 +17,6 @@ export function interpolate(str, params) {
 
 
 /** EDITING **/
-/*
-
- */
 
 export function edit (data) {
   return function (dispatch) {
