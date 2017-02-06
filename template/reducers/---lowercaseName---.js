@@ -109,7 +109,7 @@ export default function reducer(state = defaultState, action) {
     }
 
     case "EDIT_<%= uppercaseName %>": {
-      const key = action.payload.data.id
+      const key = keyGen(action.payload.data)
       if (!key) {
         //model is new
         return {
@@ -127,7 +127,7 @@ export default function reducer(state = defaultState, action) {
     }
 
     case "SAVE_<%= uppercaseName %>": {
-      const key = action.payload.data.id
+      const key = keyGen(action.payload.data)
       const prev = !key ? state.temp : previousItem(key)
       const updated = {  ...prev, metas: {  ...prev.metas, saving: true } }
       if (!key) {
@@ -140,7 +140,7 @@ export default function reducer(state = defaultState, action) {
     }
 
     case "SAVE_<%= uppercaseName %>_REJECTED": {
-      const key = action.payload.data.id
+      const key = keyGen(action.payload.data)
       const prev = !key ? state.temp : previousItem(key)
       const updated = { ...prev, metas: { ...prev.metas, error: action.payload.error, saving: false } }
       if (!key) {
@@ -156,7 +156,7 @@ export default function reducer(state = defaultState, action) {
     }
 
     case "SAVE_<%= uppercaseName %>_FULFILLED": {
-      const key = action.payload.params.id
+      const key = keyGen(action.payload.params)
       const prev = !key ? state.temp : previousItem(key)
       const updated = { ...prev, metas: { ...prev.metas, saving: false, forward: !key }, model: action.payload.data }
       if (!key) {
@@ -172,7 +172,7 @@ export default function reducer(state = defaultState, action) {
     }
 
     case "DELETE_<%= uppercaseName %>": {
-      const key = action.payload.data.id
+      const key = keyGen(action.payload.data)
       const prev = previousItem(key)
       const updated = {  ...prev, metas: {  ...prev.metas, deleting: true } }
       const collection = update(updated, key)
@@ -180,7 +180,7 @@ export default function reducer(state = defaultState, action) {
     }
 
     case "DELETE_<%= uppercaseName %>_REJECTED": {
-      const key = action.payload.data.id
+      const key = keyGen(action.payload.data)
       const prev = previousItem(key)
       const updated = { ...prev, metas: { ...prev.metas, error: action.payload.error, deleting: false } }
       const collection = update(updated, key)
@@ -191,7 +191,7 @@ export default function reducer(state = defaultState, action) {
     }
 
     case "DELETE_<%= uppercaseName %>_FULFILLED": {
-      const key = action.payload.params.id
+      const key = keyGen(action.payload.data)
       const collection = {...state.collection}
       delete collection[key]
       return {
