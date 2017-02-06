@@ -8,7 +8,7 @@ export function flatten (node) {
   return Object.keys(node).map(nodeName => node[nodeName].model)
 }
 
-function interpolate(str, params) {
+export function interpolate(str, params) {
     const keys = Object.keys(params);
     return keys.reduce((prev, current) => {
         return prev.replace(new RegExp('{' + current + '}'), params[current])

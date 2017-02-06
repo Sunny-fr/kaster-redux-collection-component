@@ -1,5 +1,5 @@
 import React from 'react'
-import { fetchAll, fetchOne, flatten, reset, remove } from '../actions/<%= lowercaseName %>Actions'
+import { fetchAll, fetchOne, flatten, reset, remove, interpolate } from '../actions/<%= lowercaseName %>Actions'
 
 
 export class AbstractComponent extends React.Component {
