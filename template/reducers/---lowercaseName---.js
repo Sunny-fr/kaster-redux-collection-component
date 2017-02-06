@@ -24,6 +24,17 @@ function mapModels(list) {
 }, {})
 }
 
+function interpolate(str, params) {
+    const keys = Object.keys(params);
+    return keys.reduce((prev, current) => {
+        return prev.replace(new RegExp('{' + current + '}'), params[current])
+    }, str || keys.map( v => '{' + v + '}').join(':'))
+}
+
+function keyGen(params) {
+    return interpolate(null, params)
+}
+
 
 export default function reducer(state = defaultState, action) {
 
@@ -59,7 +70,7 @@ export default function reducer(state = defaultState, action) {
 
     case "FETCH_<%= uppercaseName %>": {
       const newState = {...state}
-      const key = action.payload.params.id
+      const key = keyGen(action.payload.params)
       if (!state.collection[key]) {
         newState.collection[key] = {...default<%= capitalizeName %>, metas: {...default<%= capitalizeName %>.metas, fetching: true}}
       } else {
@@ -75,7 +86,7 @@ export default function reducer(state = defaultState, action) {
 
     case "FETCH_<%= uppercaseName %>_REJECTED": {
       const collection = {...state.collection}
-      const key = action.payload.params.id
+      const key = keyGen(action.payload.params)
         collection[key] = {metas: {loaded: false, fetching: false, valid: false, error: action.payload.error}, model:{...default<%= capitalizeName %>.model}}
         return {
           ...state,
@@ -85,7 +96,7 @@ export default function reducer(state = defaultState, action) {
 
     case "FETCH_<%= uppercaseName %>_FULFILLED": {
       const collection = {...state.collection}
-      const key = action.payload.params.id
+      const key = keyGen(action.payload.params)
       collection[key] = {metas: {loaded: true, fetching: false, valid: true}, model: action.payload.data}
       return {
           ...state,
