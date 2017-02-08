@@ -62,8 +62,8 @@ export class AbstractModelComponent extends AbstractComponent {
         return interpolate(null, this.getParams(props || this.props))
     }
 
-    getModel() {
-        return this._getModel().model
+    getModel(props) {
+        return this._getModel(props).model
     }
 
     getMetas(prop, newProps) {
