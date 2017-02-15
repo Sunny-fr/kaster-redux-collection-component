@@ -1,47 +1,58 @@
 import React from 'react'
-import { fetchAll, fetchOne, flatten, reset, remove, interpolate } from '../actions/<%= lowercaseName %>Actions'
+import {fetchAll, fetchOne, flatten, reset, remove, interpolate} from '../actions/<%= lowercaseName %>Actions'
 
 
 export class AbstractComponent extends React.Component {
-  render () {
-    if (this.gotError()) return null
-    if (!this.isLoaded()) return  (<p>loading</p>)
-    return (<div>loaded (you should do something with your view :) )</div>)
-  }
+    render() {
+        if (this.gotError()) return null
+        if (!this.isLoaded()) return (<p>loading</p>)
+        return (<div>loaded (you should do something with your view :) )</div>)
+    }
 }
 
 export class AbstractCollectionComponent extends AbstractComponent {
 
-  remove = (data) => {
-    this.props.dispatch(remove(data))
-  }
+    remove = (data) => {
+        this.props.dispatch(remove(data))
+    }
 
-  fetch = () => {
-    this.props.dispatch(fetchAll())
-  }
+    fetch = () => {
+        this.props.dispatch(fetchAll())
+    }
 
-  getCollection() {
-    return flatten(this.props.collection)
-  }
+    getCollection() {
+        return flatten(this.props.collection)
+    }
 
-  isLoaded (){
-    return this.props.collectionLoaded
-  }
+    isLoaded() {
+        return this.props.collectionLoaded
+    }
 
-  componentWillMount (){
-    if (!this.isLoaded()) this.fetch()
-  }
-  componentWillUnmount() {
-    this.props.dispatch(reset())
-  }
+    componentWillMount() {
+        if (!this.isLoaded()) this.fetch()
+    }
+
+    componentWillUnmount() {
+        this.props.dispatch(reset())
+    }
 }
 
 export class AbstractModelComponent extends AbstractComponent {
 
+    /** OVERRIDE / REWRITE HERE **/
+    getParams = (props) => {
+        const { prop1, prop2, prop3} = props || this.props
+        return !prop1 || !prop2 || !prop3 ? null : { prop1, prop2, prop3}
+    }
+
+
+    /* ACTIONS */
+
     fetch = (params) => {
-        console.log('fetch', params.name)
         this.props.dispatch(fetchOne(params))
     }
+
+    /* ACTIONS */
 
     _getModel(newProps) {
         const props = newProps || this.props
@@ -52,18 +63,13 @@ export class AbstractModelComponent extends AbstractComponent {
         return !this.getKey(props)
     }
 
-    /** CHANGE VALUES HERE **/
-    getParams(props){
-        const { prop1, prop2, prop3} = props || this.props
-        return { prop1, prop2, prop3}
-    }
-
     getKey(props){
-        return interpolate(null, this.getParams(props || this.props))
+        const params = this.getParams(props || this.props)
+        return !params ? null : interpolate(null, params)
     }
 
-    getModel() {
-        return this._getModel().model
+    getModel(props) {
+        return this._getModel(props).model
     }
 
     getMetas(prop, newProps) {
@@ -99,11 +105,61 @@ export class AbstractModelComponent extends AbstractComponent {
 }
 
 
-//REQUIRED FOR EACH COMPONENT
-// export default connect((store) => {
-//   return {
-//     tempModel: store.<%= lowercaseName %>.temp,
-//     collectionLoaded: store.<%= lowercaseName %>.loaded,
-//     collection: store.<%= lowercaseName %>.collection
-//   }
-// })(YOUR_COMPONENT)
+export class AbstractFormModelComponent extends AbstractModelComponent {
+
+    componentDidUpdate() {
+        /** OVERRIDE / REWRITE HERE **/
+        if (this.props.forward) {
+            this.resetTempModel()
+            const {prop1, prop2, prop3} = this.getModel()
+            // DO SOMETHING HERE navigate/to/prop1/prop2/prop3
+        }
+    }
+
+    constructor(props) {
+        super(props)
+        this.silentState = {
+            edited: {} // Not pristines :-)
+        }
+    }
+
+    /* ACTIONS */
+
+    edit = (model) => {
+        this.props.dispatch(update(model, this.getParams()))
+    }
+
+    submit = () => {
+        const model = this.getModel()
+        const params = this.getParams() || this.getParams(model)
+        this.props.dispatch(save(model, params))
+    }
+
+    resetTempModel = () => {
+        this.props.dispatch(resetTemp())
+    }
+
+    /* ACTIONS */
+
+    setSilentState = (data) => {
+        this.silentState = Object.assign({}, this.silentState, data)
+    }
+
+    changeProp = (prop, value) => {
+        this.setPristine(prop)
+        this.edit({[prop]: value})
+    }
+
+    setPristine(prop) {
+        const edited = {
+            ...this.silentState.edited,
+            [prop]: true
+        }
+        this.setSilentState({edited})
+    }
+
+    getEditedStatus = (prop) => {
+        return prop ? this.silentState.edited[prop] : this.silentState.edited
+    }
+
+}
