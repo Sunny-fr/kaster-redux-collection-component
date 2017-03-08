@@ -69,19 +69,22 @@ export default function reducer(state = defaultState, action) {
         }
 
         case "FETCH_<%= uppercaseName %>": {
-            const newState = {...state}
+            const collection = {...state.collection}
             const key = keyGen(action.payload.params)
             if (!state.collection[key]) {
-                newState.collection[key] = {...defaultModel, metas: {...defaultModel.metas, fetching: true}}
+                collection[key] = {...defaultModel, metas: {...defaultModel.metas, fetching: true}}
             } else {
-                newState.collection[key] = Object.assign({}, newState.collection[key], {
+                collection[key] = Object.assign({}, collection[key], {
                     metas: {
                         ...defaultModel.metas,
                         fetching: true
                     }
                 })
             }
-            return newState
+            return {
+                ...state,
+                collection
+            }
         }
 
         case "FETCH_<%= uppercaseName %>_REJECTED": {

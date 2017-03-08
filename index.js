@@ -1,1 +1,1 @@
-console.log('welcome caster-redux-collection-component')
+console.log('welcome kaster-redux-collection-component')

@@ -1,5 +1,5 @@
 {
-  "name": "caster-redux-collection-component",
+  "name": "kaster-redux-collection-component",
   "version": "1.0.2",
   "description": "A caster generator for react redux component for a collection of items",
   "main": "index.js",
@@ -9,18 +9,18 @@
   "author": {
     "name": "Alaa El Helw",
     "email": "sicksadsun@gmail.com",
-    "url": "https://github.com/Sunny-fr/caster-redux-collection-component"
+    "url": "https://github.com/Sunny-fr/kaster-redux-collection-component"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Sunny-fr/caster-redux-collection-component.git"
+    "url": "https://github.com/Sunny-fr/kaster-redux-collection-component.git"
   },
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Sunny-fr/caster-redux-collection-component/issues"
+    "url": "https://github.com/Sunny-fr/kaster-redux-collection-component/issues"
   },
-  "homepage": "https://github.com/Sunny-fr/caster-redux-collection-component#readme",
+  "homepage": "https://github.com/Sunny-fr/kaster-redux-collection-component#readme",
   "dependencies": {
-    "caster": "github:sunny-fr/caster"
+    "caster": "github:sunny-fr/kaster"
   }
 }
