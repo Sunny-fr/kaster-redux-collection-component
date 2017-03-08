@@ -1,6 +1,6 @@
 {
   "name": "kaster-redux-collection-component",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "A caster generator for react redux component for a collection of items",
   "main": "index.js",
   "scripts": {
@@ -21,6 +21,6 @@
   },
   "homepage": "https://github.com/Sunny-fr/kaster-redux-collection-component#readme",
   "dependencies": {
-    "caster": "github:sunny-fr/kaster"
+    "kaster": "0.0.5"
   }
 }
