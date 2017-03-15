@@ -1,13 +1,13 @@
-# caster-redux-collection-component
-A caster generator for react redux component for a collection of items
+# kaster-redux-collection-component
+A kaster generator for react redux component for a collection of items
 
 
 ## install
 ```
-npm install Sunny-fr/caster-redux-collection-component --save-dev
+npm install kaster-redux-collection-component --save-dev
 ```
 
 ## command
 ```
-cast redux-collection-component [YOUR_COLLECTION_NAME] [DIR]
+kast redux-collection-component [YOUR_COLLECTION_NAME] [DIR]
 ```
